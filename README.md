@@ -1,1 +1,7 @@
-# SQL1
+# Utilisation d'une base de données au sein d'un etablissement de santé
+
+## Objectif
+Ce projet a pour but de mettre en évidence l'importance de l'utilisation d'une base de données dans le milieu de la santé. Mon intérêt sera davantage porté sur les requêtes que l'on peut formuler que sur les données qui sont très simples et synthétiques. Ces requêtes permettront de montrer comment une base de données permet de faciliter le suivi des patients, gérer l'organisation des chambres d'hospitalisations ainsi que celles des médecins.
+
+## Les données
+Les données utilisées sont générées aléatoirement par OpenAI, elles sont donc très simplifiées et ne sont pas nombreuses. Cela pourra parfois limiter nos requêtes qui ne nous donneront pas un résultat concret mais dans le cas où nous avons des données plus larges dans des tables constituées de la même manière que les nôtres, elles fonctionneront et donneront un résultat bien plus pertinent. Pour pallier cela, j'ai parfois ajouté dans mes requêtes l'apparition d'un message d'erreur qui nous explique que nous n'avons pas les données nécessaires, afin que l'on puisse tout de même utiliser ce code en ayant un résultat, même s'il n'est pas le plus pertinent.
