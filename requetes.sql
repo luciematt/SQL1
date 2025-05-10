@@ -1,4 +1,4 @@
---Requête : Liste des consultations par patient avec les médecins traitants
+-- Liste des consultations par patient avec les médecins traitants
 SELECT
     p.nom AS patient_nom,
     c.date AS consultation_date,
@@ -12,29 +12,39 @@ JOIN Medecins m ON c.medecin_id = m.id
 ORDER BY
     p.nom, c.date;
 
--- Requête : Dernière hospitalisation d'un patient spécifique
-
+-- Dernière hospitalisation d'un patient spécifique
 SELECT 
     p.nom AS patient_nom,
-    h.date_entree,
-    h.date_sortie,
-    ch.type AS chambre_type
+    c.date AS consultation_date,
+    c.diagnostic,
+    pr.medicament,
+    pr.posologie,
+    m.nom AS medecin_nom,
+    m.specialite
 FROM 
-    Hospitalisations h
-JOIN 
-    Patients p ON h.patient_id = p.id
-LEFT JOIN 
-    Chambres ch ON h.chambre_id = ch.id  
+    Consultations c
+JOIN Patients p ON c.patient_id = p.id
+JOIN Medecins m ON c.medecin_id = m.id
+LEFT JOIN Prescriptions pr ON pr.consultation_id = c.id
 WHERE 
-    p.id = 5  -- Exemple avec un patient spécifique
-ORDER BY 
-    h.date_entree DESC;
+    p.nom = 'Bernadette Leclerc' --Exemple
 
---Index : Optimisation des recherches sur les consultations
-CREATE INDEX idx_consultations_medecin_date 
-ON Consultations (medecin_id, date);
+UNION ALL
 
---Requête : Liste des patients ayant consulté plusieurs fois pour le même diagnostic
+SELECT 
+    'Aucune consultation trouvée pour cette patiente.' AS patient_nom, --Permet de vérifier s'il s'agit d'un nouveau patient ou non
+    NULL, NULL, NULL, NULL,
+    NULL, NULL
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Consultations c
+    JOIN Patients p ON c.patient_id = p.id
+    WHERE p.nom = 'Bernadette Leclerc'
+);
+
+
+
+-- Liste des patients ayant consulté plusieurs fois pour le même diagnostic
 SELECT 
     p.nom AS patient_nom,
     TRIM(LOWER(c.diagnostic)) AS diagnostic,
@@ -48,7 +58,7 @@ GROUP BY
 ORDER BY 
     nombre_consultations DESC;
 
---Requête : Nombre de jours d'hospitalisation par spécialité de médecin
+-- Nombre de jours d'hospitalisation par spécialité de médecin
     SELECT 
     m.specialite AS medecin_specialite,
     SUM(JULIANDAY(h.date_sortie) - JULIANDAY(h.date_entree)) AS jours_hospitalisation
@@ -65,7 +75,7 @@ GROUP BY
 ORDER BY 
     jours_hospitalisation DESC;
 
--- Requête : Nombre d'utilisations par chambre
+-- Nombre d'utilisations par chambre
 SELECT 
     c.numero,
     COUNT(h.id) AS total_occupations
@@ -78,7 +88,7 @@ GROUP BY
 ORDER BY 
     total_occupations DESC;
 
--- Requête : Planning d'occupation des chambres à une période donnée
+-- Planning d'occupation des chambres à une période donnée
 SELECT 
     COALESCE(p.nom, 'Aucune hospitalisation à cette période.') AS message, --Message d'erreur si aucune n'est trouvée
     p.nom AS patient,
@@ -108,21 +118,42 @@ WHERE NOT EXISTS (
     JOIN Patients p ON h.patient_id = p.id
     WHERE 
         h.date_sortie IS NULL 
-        AND h.date_entree <= '2024-02-01'
+        AND h.date_entree <= '2024-02-01' --Exemple
 );
 
---Requête : Médicaments prescrits par un médecin donné (ex: ID = 2)
+-- Historique médecin spécifique
 SELECT 
-    p.nom AS patient,
+    pa.nom AS patient,
+    c.date AS consultation_date,
+    c.diagnostic,
     pr.medicament,
-    pr.posologie,
-    c.date
+    pr.posologie
 FROM 
     Prescriptions pr
 JOIN Consultations c ON pr.consultation_id = c.id
-JOIN Patients p ON c.patient_id = p.id
+JOIN Patients pa ON c.patient_id = pa.id
+JOIN Medecins m ON c.medecin_id = m.id
 WHERE 
-    c.medecin_id = 2;
+    m.nom = 'Sophie Marceau'
+
+UNION ALL
+
+SELECT 
+    'Aucune donnée' AS patient,
+    NULL AS consultation_date,
+    'Aucune prescription trouvée' AS diagnostic,
+    NULL AS medicament,
+    NULL AS posologie
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Prescriptions pr
+    JOIN Consultations c ON pr.consultation_id = c.id
+    JOIN Medecins m ON c.medecin_id = m.id
+    WHERE m.nom = 'Sophie Marceau'
+)
+ORDER BY 
+    consultation_date DESC;
+
 
 --Requête : Nombre de consultations par spécialité médicale
 SELECT 
