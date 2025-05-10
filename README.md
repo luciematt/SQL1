@@ -10,4 +10,4 @@ Les données utilisées sont générées aléatoirement par OpenAI, elles sont d
 La base de données utilisée comporte alors de nombreuses limites mais sert avant tout de structure pour formuler les requêtes qui sont, elles, plus abouties et performantes. Vous trouverez un titre associé à chacune d'entre-elles afin de comprendre son but et de comprendre le rôle qu'elle peut jouer dans l'organisation d'un établissement aussi important qu'un hôpital. 
 
 ![Diagramme ER](IMG_5428.jpeg)
-Vous trouverez les structures des tables ainsi que leur contenu [ici](https://github.com/luciematt/SQL1/blob/main/database.sql) puis les requêtes associées [ici](https://github.com/luciematt/SQL1/blob/main/requetes.sql)
+Vous trouverez les structures des tables ainsi que leur contenu [ici](https://github.com/luciematt/SQL1/blob/main/database.sql) puis les requêtes associées [ici](https://github.com/luciematt/SQL1/blob/main/requetes.sql).
